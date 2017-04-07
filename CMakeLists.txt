@@ -21,7 +21,13 @@ endif()
 
 include( CGAL_CreateSingleSourceCGALProgram )
 
+create_single_source_cgal_program( "src/cgal_advancing_front_surface_reconstruction.cpp" )
 create_single_source_cgal_program( "src/cgal_compute_average_spacing.cpp" )
 create_single_source_cgal_program( "src/cgal_grid_simplify_point_set.cpp" )
+create_single_source_cgal_program( "src/cgal_jet_estimate_normals.cpp" )
+create_single_source_cgal_program( "src/cgal_jet_smooth_point_set.cpp" )
+create_single_source_cgal_program( "src/cgal_mst_orient_normals.cpp" )
+create_single_source_cgal_program( "src/cgal_shape_detection.cpp" )
+
 
 
