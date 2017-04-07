@@ -10,9 +10,9 @@ int main (int argc, char** argv)
 
   if (args.get_bool ('h', "help"))
   {
-    std::cout << "-----------------------------------" << std::endl
-              << "[CGALTools] Compute Average Spacing" << std::endl
-              << "-----------------------------------" << std::endl << std::endl
+    std::cout << "----------------------------------" << std::endl
+              << "[CGALApps] Compute Average Spacing" << std::endl
+              << "----------------------------------" << std::endl << std::endl
               << "Reads a point set and estimates the average spacing based on a set of nearest"
               << std::endl << "neighbors."
               << std::endl << std::endl
@@ -28,7 +28,10 @@ int main (int argc, char** argv)
   CGALApps::read_point_set (args, points);
     
   if (points.empty())
+  {
+    std::cerr << "Error: zero points read." << std::endl;
     return EXIT_FAILURE;
+  }
   
   FT average_spacing = CGAL::compute_average_spacing<Concurrency_tag>
     (points, nb_neighbors);

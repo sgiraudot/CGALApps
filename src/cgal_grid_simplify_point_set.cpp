@@ -10,13 +10,13 @@ int main (int argc, char** argv)
 
   if (args.get_bool ('h', "help"))
   {
-    std::cout << "-----------------------------------" << std::endl
-              << "[CGALTools] Grid Simplify Point Set" << std::endl
-              << "-----------------------------------" << std::endl << std::endl
+    std::cout << "----------------------------------" << std::endl
+              << "[CGALApps] Grid Simplify Point Set" << std::endl
+              << "----------------------------------" << std::endl << std::endl
               << "Simplifies a point set based on a regular 3D grid."
               << std::endl << std::endl
               << " -i  --input    Input file" << std::endl
-              << " -o  --output   Output file (default = standard output)" << std::endl
+              << " -o  --output   Output file in PLY format (default = standard output)" << std::endl
               << " -e  --epsilon  Length of a grid cell (default = 0.1)" << std::endl;
     return EXIT_SUCCESS;
   }
@@ -28,7 +28,10 @@ int main (int argc, char** argv)
   CGALApps::read_point_set (args, points);
     
   if (points.empty())
+  {
+    std::cerr << "Error: zero points read." << std::endl;
     return EXIT_FAILURE;
+  }
   
   CGAL::grid_simplify_point_set (points, epsilon);
 
