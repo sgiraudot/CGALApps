@@ -26,16 +26,21 @@ To simplify a point set using a regular grid of size 0.5:
 $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 -o out.ply
 ```
 
-To reconstruct a simplified version of a point set (not available yet):
+To reconstruct a simplified version of a point set:
 
 ```sh
 $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_surface_reconstruction -o reco.off
 ```
 
-## Done
+## Available Apps
 
-* `compute_average_spacing()`
-* `grid_simplify_point_set()`
+* `cgal_advancing_front_surface_reconstruction`
+* `cgal_compute_average_spacing`
+* `cgal_grid_simplify_point_set`
+* `cgal_jet_estimate_normals`
+* `cgal_jet_smooth_point_set`
+* `cgal_mst_orient_normals`
+* `cgal_shape_detection`
 
 ## Todo
 
@@ -47,7 +52,6 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 * `random_simplify_point_set()`
 * `hierarchy_simplify_point_set()`
 * `wlop_simplify_and_regularize_point_set()`
-* `jet_smooth_point_set()`
 * `bilateral_point_set()`
 * `jet_estimate_normals()`
 * `pca_estimate_normals()`
@@ -58,6 +62,5 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 
 ### Surface Reconstruction
 
-* `advancing_front_surface_reconstruction()`
 * `poisson_surface_reconstruction()`
 * `scale_space_surface_reconstruction()`
