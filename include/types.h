@@ -11,6 +11,9 @@ typedef Kernel::Vector_3 Vector_3;
 
 typedef CGAL::Point_set_3<Point_3, Vector_3> Point_set;
 
+typedef CGAL::cpp11::array<std::size_t, 3> Facet;
+typedef CGAL::cpp11::array<unsigned char, 3> Color;
+
 // Concurrency
 #ifdef CGAL_LINKED_WITH_TBB
 typedef CGAL::Parallel_tag Concurrency_tag;
