@@ -4,6 +4,36 @@ Collection of small self-contained one-task programs designed to
 easily apply CGAL algorithms to data sets and combine these algorithms
 using standard Unix pipes.
 
+## Documentation
+
+All applications embed their own documentation accessible with the
+argument `--help` (or `-h`). For example:
+
+```sh
+$ cgal_shape_detection --help
+--------------------------
+[CGALApps] Shape Detection
+--------------------------
+
+Efficient RANSAC algorithm to detect shapes in a point set.
+
+ -i  --input        Input file
+ -o  --output       Output file in PLY format (default = standard output)
+ -p  --probability  Probability for search endurance (default = 0.05)
+ -m  --min-points   Minimum number of points in shape (default = 1% of total)
+ -e  --epsilon      Maximum tolerance from point to shape (default = 1% of bounding box diagonal)
+ -n  --normal       Maximum normal deviation in radiants (default = 0.45)
+ -c  --cluster      Maximum distances between connected points (default = 1% of bounding box diagonal)
+Shapes:
+ -P  --planes       Detect planes
+ -C  --cylinders    Detect cylinders
+ -N  --cones        Detect cones
+ -T  --torus        Detect torus
+ -S  --spheres      Detect spheres
+```
+For more information on the parameters, please refer to the
+corresponding CGAL reference manual pages.
+
 ## Examples
 
 To compute the average spacing using 6 nearest neighbors (default):
