@@ -70,6 +70,7 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 * `cgal_jet_estimate_normals`
 * `cgal_jet_smooth_point_set`
 * `cgal_mst_orient_normals`
+* `cgal_poisson_surface_reconstruction`
 * `cgal_shape_detection`
 
 ## Todo
