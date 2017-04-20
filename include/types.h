@@ -3,6 +3,7 @@
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Point_set_3.h>
+#include <CGAL/Polyhedron_3.h>
 
 typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 typedef Kernel::FT FT;
@@ -10,6 +11,7 @@ typedef Kernel::Point_3 Point_3;
 typedef Kernel::Vector_3 Vector_3;
 
 typedef CGAL::Point_set_3<Point_3, Vector_3> Point_set;
+typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
 
 typedef CGAL::cpp11::array<std::size_t, 3> Facet;
 typedef CGAL::cpp11::array<unsigned char, 3> Color;

@@ -82,6 +82,21 @@ void write_surface (const Args& args, Point_set& points,
   }
 }
 
+void write_surface (const Args& args, const Polyhedron& mesh)
+{
+  // Output file can be given with -o or --output
+  std::string filename = args.get_string ('o', "output");
+
+  // Otherwise, write to std::cout
+  if (filename == std::string())
+    std::cout << mesh;
+  else
+  {
+    std::ofstream f(filename.c_str());
+    f << mesh;
+  }
+}
+
 
 }
 
