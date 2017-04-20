@@ -31,4 +31,13 @@ create_single_source_cgal_program( "src/cgal_poisson_surface_reconstruction.cpp"
 create_single_source_cgal_program( "src/cgal_shape_detection.cpp" )
 
 
-
+install(TARGETS
+  cgal_advancing_front_surface_reconstruction
+  cgal_compute_average_spacing
+  cgal_grid_simplify_point_set
+  cgal_jet_estimate_normals
+  cgal_jet_smooth_point_set
+  cgal_mst_orient_normals
+  cgal_poisson_surface_reconstruction
+  cgal_shape_detection
+  RUNTIME DESTINATION bin)
