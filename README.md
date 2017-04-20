@@ -93,5 +93,4 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 
 ### Surface Reconstruction
 
-* `poisson_surface_reconstruction()`
 * `scale_space_surface_reconstruction()`

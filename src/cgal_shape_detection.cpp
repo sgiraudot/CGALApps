@@ -53,7 +53,7 @@ int main (int argc, char** argv)
 
   if (!(points.has_normal_map()))
   {
-    std::cerr << "Error: point set does not have normal vectors" << std::endl;
+    std::cerr << "Error: point set does not have normal vectors." << std::endl;
     return EXIT_FAILURE;
   }
 
