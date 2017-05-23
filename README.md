@@ -66,6 +66,7 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 
 * `cgal_advancing_front_surface_reconstruction`
 * `cgal_compute_average_spacing`
+* `cgal_convert`
 * `cgal_grid_simplify_point_set`
 * `cgal_jet_estimate_normals`
 * `cgal_jet_smooth_point_set`
