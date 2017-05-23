@@ -24,11 +24,11 @@ struct Length {
     d = sqrt(squared_distance(c->vertex((index+1)%4)->point(),
                               c->vertex((index+2)%4)->point()));
     if(d>bound) return adv.infinity();
-    d += sqrt(squared_distance(c->vertex((index+2)%4)->point(),
-                               c->vertex((index+3)%4)->point()));
+    d = sqrt(squared_distance(c->vertex((index+2)%4)->point(),
+                              c->vertex((index+3)%4)->point()));
     if(d>bound) return adv.infinity();
-    d += sqrt(squared_distance(c->vertex((index+1)%4)->point(),
-                               c->vertex((index+3)%4)->point()));
+    d = sqrt(squared_distance(c->vertex((index+1)%4)->point(),
+                              c->vertex((index+3)%4)->point()));
     if(d>bound) return adv.infinity();
 
     return adv.smallest_radius_delaunay_sphere (c, index);
