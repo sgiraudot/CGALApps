@@ -55,14 +55,16 @@ public:
     }
   }
 
-  std::string get_string (const char& s, const char* l, const std::string& def = std::string()) const
+  std::string get_string (const char& s, const char* l, const std::string& def = std::string(), const std::size_t iter = 0) const
   {
     typename Short_map::const_iterator sit = m_short.find(s);
     if (sit != m_short.end())
-      return sit->second.front();
+      if (sit->second.size() > iter)
+        return sit->second[iter];
     typename Long_map::const_iterator lit = m_long.find(std::string(l));
     if (lit != m_long.end())
-      return lit->second.front();
+      if (lit->second.size() > iter)
+        return lit->second[iter];
     return def;
   }
 

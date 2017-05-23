@@ -12,7 +12,7 @@
 namespace CGALApps
 {
 
-void read_point_set (const Args& args, Point_set& points)
+void read_point_set (const Args& args, Point_set& points, bool try_stdcin = true)
 {
   // Input file can be given with -i or --input
   std::string filename = args.get_string ('i', "input");
@@ -24,6 +24,9 @@ void read_point_set (const Args& args, Point_set& points)
   // Otherwise, read from std::cin
   if (filename == std::string())
   {
+    if (!try_stdcin)
+      return;
+    
     std::string input, line;
     while (getline(std::cin, line))
       input = input + line + "\n";
@@ -37,17 +40,27 @@ void read_point_set (const Args& args, Point_set& points)
   }
 }
 
-void write_point_set (const Args& args, Point_set& points)
+void write_point_set (const Args& args, Point_set& points, bool binary = true)
 {
   // Output file can be given with -o or --output
   std::string filename = args.get_string ('o', "output");
 
   // Otherwise, write to std::cout
   if (filename == std::string())
+  {
+    if (binary)
+      CGAL::set_binary_mode(std::cout);
+    else
+      CGAL::set_ascii_mode(std::cout);
     std::cout << points;
+  }
   else
   {
     std::ofstream f(filename.c_str());
+    if (binary)
+      CGAL::set_binary_mode(f);
+    else
+      CGAL::set_ascii_mode(f);
     f << points;
   }
 }
@@ -95,6 +108,16 @@ void write_surface (const Args& args, const Polyhedron& mesh)
     std::ofstream f(filename.c_str());
     f << mesh;
   }
+}
+
+bool extension_of_file_is (const std::string& filename, const char* ext)
+{
+  if(filename.size() < 5) // Filename is at least a.ext
+    return false;
+
+  return ((filename[filename.size() - 3] == ext[0] || filename[filename.size() - 3] == std::toupper(ext[0]))
+          && (filename[filename.size() - 2] == ext[1] || filename[filename.size() - 2] == std::toupper(ext[1]))
+          && (filename[filename.size() - 1] == ext[2] || filename[filename.size() - 1] == std::toupper(ext[2])));
 }
 
 

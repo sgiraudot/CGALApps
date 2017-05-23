@@ -23,6 +23,7 @@ include( CGAL_CreateSingleSourceCGALProgram )
 
 create_single_source_cgal_program( "src/cgal_advancing_front_surface_reconstruction.cpp" )
 create_single_source_cgal_program( "src/cgal_compute_average_spacing.cpp" )
+create_single_source_cgal_program( "src/cgal_convert.cpp" )
 create_single_source_cgal_program( "src/cgal_grid_simplify_point_set.cpp" )
 create_single_source_cgal_program( "src/cgal_jet_estimate_normals.cpp" )
 create_single_source_cgal_program( "src/cgal_jet_smooth_point_set.cpp" )
@@ -34,6 +35,7 @@ create_single_source_cgal_program( "src/cgal_shape_detection.cpp" )
 install(TARGETS
   cgal_advancing_front_surface_reconstruction
   cgal_compute_average_spacing
+  cgal_convert
   cgal_grid_simplify_point_set
   cgal_jet_estimate_normals
   cgal_jet_smooth_point_set
