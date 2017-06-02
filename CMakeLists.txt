@@ -19,6 +19,21 @@ if ( NOT Boost_FOUND )
   return()  
 endif()
 
+find_package( TBB )
+if( TBB_FOUND )
+  include(${TBB_USE_FILE})
+  list(APPEND CGAL_3RD_PARTY_LIBRARIES ${TBB_LIBRARIES})
+else()
+  message(STATUS "TBB not found: parallel processing won't be used.")
+endif()
+
+find_package(Eigen3 3.1.0)
+if (EIGEN3_FOUND)
+  include( ${EIGEN3_USE_FILE} )
+endif()
+
+
+
 include( CGAL_CreateSingleSourceCGALProgram )
 
 create_single_source_cgal_program( "src/cgal_advancing_front_surface_reconstruction.cpp" )
