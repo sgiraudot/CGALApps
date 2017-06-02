@@ -29,6 +29,7 @@ create_single_source_cgal_program( "src/cgal_jet_estimate_normals.cpp" )
 create_single_source_cgal_program( "src/cgal_jet_smooth_point_set.cpp" )
 create_single_source_cgal_program( "src/cgal_mst_orient_normals.cpp" )
 create_single_source_cgal_program( "src/cgal_poisson_surface_reconstruction.cpp" )
+create_single_source_cgal_program( "src/cgal_remove_outliers.cpp" )
 create_single_source_cgal_program( "src/cgal_shape_detection.cpp" )
 
 
@@ -41,5 +42,6 @@ install(TARGETS
   cgal_jet_smooth_point_set
   cgal_mst_orient_normals
   cgal_poisson_surface_reconstruction
+  cgal_remove_outliers
   cgal_shape_detection
   RUNTIME DESTINATION bin)
