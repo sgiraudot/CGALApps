@@ -3,6 +3,7 @@
 #include "io.h"
 
 #include <CGAL/Shape_detection_3.h>
+#include <CGAL/Real_timer.h>
 
 typedef CGAL::Shape_detection_3::Efficient_RANSAC_traits
 <Kernel, Point_set, Point_set::Point_map, Point_set::Vector_map> Traits;
@@ -25,6 +26,7 @@ int main (int argc, char** argv)
               << "--------------------------" << std::endl << std::endl
               << "Efficient RANSAC algorithm to detect shapes in a point set."
               << std::endl << std::endl
+              << " -v  --verbose      Display info to stderr" << std::endl
               << " -i  --input        Input file" << std::endl
               << " -o  --output       Output file in PLY format (default = standard output)" << std::endl
               << " -p  --probability  Probability for search endurance (default = 0.05)" << std::endl
@@ -40,6 +42,39 @@ int main (int argc, char** argv)
               << " -S  --spheres      Detect spheres" << std::endl;
     return EXIT_SUCCESS;
   }
+
+  bool verbose = args.get_bool('v', "verbose");
+  Efficient_ransac::Parameters parameters;
+  parameters.probability = args.get_double('p', "probability", 0.05);
+  parameters.min_points = args.get_size_t('m', "min-points", (std::numeric_limits<std::size_t>::max)());
+  parameters.epsilon = args.get_double('e', "epsilon", -1);
+  parameters.cluster_epsilon = args.get_double('c', "cluster", -1);
+  parameters.normal_threshold = std::cos(args.get_double('n', "normal", 0.45));
+
+  CGAL::Real_timer t;
+  if (verbose)
+  {
+    std::cerr << "[CGALApps] Remove Outliers" << std::endl
+              << " * probability = " << parameters.probability << std::endl
+              << " * min-points = " << parameters.min_points << std::endl
+              << " * epsilon = " << parameters.epsilon << std::endl
+              << " * cluster = " << parameters.cluster_epsilon << std::endl
+              << " * normal = " << parameters.normal_threshold << std::endl
+              << " * shapes =";
+    if (args.get_bool ('P', "planes"))
+      std::cerr << " planes";
+    if (args.get_bool ('C', "cylinders"))
+      std::cerr << " cylinders";
+    if (args.get_bool ('N', "cones"))
+      std::cerr << " cones";
+    if (args.get_bool ('T', "torus"))
+      std::cerr << " torus";
+    if (args.get_bool ('S', "spheres"))
+      std::cerr << " spheres";
+    std::cerr << std::endl;
+    t.start();
+  }
+
   
   Point_set points;
 
@@ -95,13 +130,10 @@ int main (int argc, char** argv)
     return EXIT_FAILURE;
   }
 
-  Efficient_ransac::Parameters parameters;
-  parameters.probability = args.get_double('p', "probability", 0.05);
-  parameters.min_points = args.get_size_t('m', "min-points", (std::numeric_limits<std::size_t>::max)());
-  parameters.epsilon = args.get_double('e', "epsilon", -1);
-  parameters.cluster_epsilon = args.get_double('c', "cluster", -1);
-  parameters.normal_threshold = std::cos(args.get_double('n', "normal", 0.45));
   ransac.detect(parameters);
+
+  if (verbose)
+    std::cerr << ransac.shapes().size() << " shape(s) detected." << std::endl;
 
   Point_set::Property_map<int> label_map = points.add_property_map<int>("shape_index", -1).first;
   Point_set::Property_map<unsigned char> red_map = points.add_property_map<unsigned char>("red", 0).first;
@@ -130,6 +162,12 @@ int main (int argc, char** argv)
   }
     
   CGALApps::write_point_set (args, points);
+
+  if (verbose)
+  {
+    t.stop();
+    std::cerr << "Done in " << t.time() << " second(s)." << std::endl;
+  }
 
   return EXIT_SUCCESS;
 }

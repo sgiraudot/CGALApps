@@ -3,6 +3,7 @@
 #include "io.h"
 
 #include <CGAL/Advancing_front_surface_reconstruction.h>
+#include <CGAL/Real_timer.h>
 
 struct Length {
 
@@ -46,18 +47,30 @@ int main (int argc, char** argv)
               << "-------------------------------------------------" << std::endl << std::endl
               << "Reconstructs an interpolating surface based on a 3D Delaunay triangulation."
               << std::endl << std::endl
-              << " -i  --input   Input file" << std::endl
-              << " -o  --output  Output file in OFF format (default = standard output)" << std::endl
-              << " -r  --radius  Radius ratio bound (default = 5.0)" << std::endl
-              << " -b  --beta    Beta angle in radiants (default = 0.52)" << std::endl
-              << " -l  --length  Maximum length of a facet (default = no limit)" << std::endl;
+              << " -v  --verbose  Display info to stderr" << std::endl
+              << " -i  --input    Input file" << std::endl
+              << " -o  --output   Output file in OFF format (default = standard output)" << std::endl
+              << " -r  --radius   Radius ratio bound (default = 5.0)" << std::endl
+              << " -b  --beta     Beta angle in radiants (default = 0.52)" << std::endl
+              << " -l  --length   Maximum length of a facet (default = no limit)" << std::endl;
     return EXIT_SUCCESS;
   }
 
+  bool verbose = args.get_bool('v', "verbose");
   double radius = args.get_double ('r', "radius", 5.0);
   double beta = args.get_double ('b', "beta", 0.52);
   double length = args.get_double ('l', "length", 0.0);
 
+  CGAL::Real_timer t;
+  if (verbose)
+  {
+    std::cerr << "[CGALApps] Advancing Front Surface Reconstruction" << std::endl
+              << " * radius = " << radius << std::endl
+              << " * beta = " << beta << std::endl
+              << " * length = " << length << std::endl;
+    t.start();
+  }
+  
   Point_set points;
 
   CGALApps::read_point_set (args, points);
@@ -76,7 +89,16 @@ int main (int argc, char** argv)
                                                std::back_inserter(facets),
                                                priority, radius, beta);
 
+  if (verbose)
+    std::cerr << facets.size() << " facet(s) created." << std::endl;
+  
   CGALApps::write_surface (args, points, facets);
+
+  if (verbose)
+  {
+    t.stop();
+    std::cerr << "Done in " << t.time() << " second(s)." << std::endl;
+  }
   
   return EXIT_SUCCESS;
 }

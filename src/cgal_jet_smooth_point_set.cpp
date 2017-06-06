@@ -3,6 +3,7 @@
 #include "io.h"
 
 #include <CGAL/Point_set_3/Point_set_processing_3.h>
+#include <CGAL/Real_timer.h>
 
 int main (int argc, char** argv)
 {
@@ -15,6 +16,7 @@ int main (int argc, char** argv)
               << "-------------------------------" << std::endl << std::endl
               << "Smooths a point set based on a parametric surface estimation."
               << std::endl << std::endl
+              << " -v  --verbose    Display info to stderr" << std::endl
               << " -i  --input      Input file" << std::endl
               << " -o  --output     Output file in PLY format (default = standard output)" << std::endl
               << " -n  --neighbors  Number of nearest neighbors used (default = 12)" << std::endl
@@ -23,11 +25,23 @@ int main (int argc, char** argv)
               << " -r  --repeat     Number of iterations (default = 1)" << std::endl;
     return EXIT_SUCCESS;
   }
-  
+
+  bool verbose = args.get_bool('v', "verbose");
   unsigned int nb_neighbors = args.get_uint ('n', "neighbors", 12);
   unsigned int fitting = args.get_uint ('f', "fitting", 2);
   unsigned int monge = args.get_uint ('m', "monge", 2);
   std::size_t repeat = args.get_size_t ('r', "repeat", 1);
+
+  CGAL::Real_timer t;
+  if (verbose)
+  {
+    std::cerr << "[CGALApps] Grid Simplify Point Set" << std::endl
+              << " * nb_neighbors = " << nb_neighbors << std::endl
+              << " * fitting = " << fitting << std::endl
+              << " * monge = " << monge << std::endl
+              << " * repeat = " << repeat << std::endl;
+    t.start();
+  }
 
   Point_set points;
 
@@ -44,6 +58,12 @@ int main (int argc, char** argv)
 
   CGALApps::write_point_set (args, points);
   
+  if (verbose)
+  {
+    t.stop();
+    std::cerr << "Done in " << t.time() << " second(s)." << std::endl;
+  }
+
   return EXIT_SUCCESS;
 }
 

@@ -3,6 +3,7 @@
 #include "io.h"
 
 #include <CGAL/Point_set_3/Point_set_processing_3.h>
+#include <CGAL/Real_timer.h>
 
 int main (int argc, char** argv)
 {
@@ -15,6 +16,7 @@ int main (int argc, char** argv)
               << "----------------------------------" << std::endl << std::endl
               << "Removes the outliers of a point set based on the local average squared distance."
               << std::endl << std::endl
+              << " -v  --verbose    Display info to stderr" << std::endl
               << " -i  --input      Input file" << std::endl
               << " -o  --output     Output file in PLY format (default = standard output)" << std::endl
               << " -n  --neighbors  Number of nearest neighbors used (default = 6)" << std::endl
@@ -24,9 +26,21 @@ int main (int argc, char** argv)
     return EXIT_SUCCESS;
   }
 
+  bool verbose = args.get_bool('v', "verbose");
   unsigned int nb_neighbors = args.get_uint ('n', "neighbors", 6);
   double percent = args.get_double ('p', "percent", 1.0);
   double distance = args.get_double ('d', "distance", 0.1);
+
+  CGAL::Real_timer t;
+  if (verbose)
+  {
+    std::cerr << "[CGALApps] Remove Outliers" << std::endl
+              << " * neighbors = " << nb_neighbors << std::endl
+              << " * percent = " << percent << std::endl
+              << " * distance = " << distance << std::endl;
+    t.start();
+  }
+
 
   Point_set points;
 
@@ -42,8 +56,19 @@ int main (int argc, char** argv)
     (CGAL::remove_outliers
      (points.begin(), points.end(), points.point_map(), nb_neighbors, percent, distance));
 
+  if (verbose)
+    std::cerr << 100. * points.garbage_size() / (points.size() + points.garbage_size())
+              << "% / " << points.garbage_size() << " point(s) removed ("
+              << points.size() << " point(s) remaining)." << std::endl;
+
   CGALApps::write_point_set (args, points);
   
+  if (verbose)
+  {
+    t.stop();
+    std::cerr << "Done in " << t.time() << " second(s)." << std::endl;
+  }
+
   return EXIT_SUCCESS;
 }
 

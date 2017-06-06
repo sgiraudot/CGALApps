@@ -17,6 +17,7 @@ $ cgal_shape_detection --help
 
 Efficient RANSAC algorithm to detect shapes in a point set.
 
+ -v  --verbose      Display info to stderr
  -i  --input        Input file
  -o  --output       Output file in PLY format (default = standard output)
  -p  --probability  Probability for search endurance (default = 0.05)
