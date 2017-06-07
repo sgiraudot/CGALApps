@@ -1,5 +1,5 @@
-#ifndef CGAL_TOOLS_ARGS_H_
-#define CGAL_TOOLS_ARGS_H_
+#ifndef CGALAPPS_ARGS_H_
+#define CGALAPPS_ARGS_H_
 
 #include <map>
 #include <vector>
@@ -116,6 +116,6 @@ public:
 
 };
 
-} // namespace CGALTools
+} // namespace CGALApps
 
-#endif // CGAL_TOOLS_ARGS_H_
+#endif // CGALAPPS_ARGS_H_

@@ -1,5 +1,5 @@
-#ifndef CGAL_TOOLS_IO_H
-#define CGAL_TOOLS_IO_H
+#ifndef CGALAPPS_IO_H
+#define CGALAPPS_IO_H
 
 #include <fstream>
 #include <string>
@@ -27,11 +27,7 @@ void read_point_set (const Args& args, Point_set& points, bool try_stdcin = true
     if (!try_stdcin)
       return;
     
-    std::string input, line;
-    while (getline(std::cin, line))
-      input = input + line + "\n";
-    std::istringstream iss(input);
-    iss >> points;
+    CGAL::read_ply_point_set (std::cin, points);
   }
   else
   {
@@ -123,4 +119,4 @@ bool extension_of_file_is (const std::string& filename, const char* ext)
 
 }
 
-#endif // CGAL_TOOLS_IO_H
+#endif // CGALAPPS_IO_H

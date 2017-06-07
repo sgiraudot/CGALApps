@@ -1,5 +1,5 @@
-#ifndef CGAL_TOOLS_TYPES_H
-#define CGAL_TOOLS_TYPES_H
+#ifndef CGALAPPS_TYPES_H
+#define CGALAPPS_TYPES_H
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Point_set_3.h>
@@ -25,4 +25,4 @@ typedef CGAL::Sequential_tag Concurrency_tag;
 
 
 
-#endif // CGAL_TOOLS_TYPES_H
+#endif // CGALAPPS_TYPES_H

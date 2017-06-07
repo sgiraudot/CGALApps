@@ -66,6 +66,7 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 ## Available Apps
 
 * `cgal_advancing_front_surface_reconstruction`
+* `cgal_cluster_point_set`
 * `cgal_compute_average_spacing`
 * `cgal_convert`
 * `cgal_grid_simplify_point_set`
