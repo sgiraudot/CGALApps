@@ -20,7 +20,7 @@ int main (int argc, char** argv)
               << " -i  --input      Input file" << std::endl
               << " -o  --output     Output file in PLY format (default = standard output)" << std::endl
               << " -n  --neighbors  Number of nearest neighbors used (default = 6)" << std::endl
-              << " -p  --percent    Percentage threshold (default = 1.0)" << std::endl
+              << " -p  --percent    Percentage threshold (default = 100)" << std::endl
               << " -d  --distance   Distance threshold (default = 0.1)" << std::endl;
       
     return EXIT_SUCCESS;
@@ -28,7 +28,7 @@ int main (int argc, char** argv)
 
   bool verbose = args.get_bool('v', "verbose");
   unsigned int nb_neighbors = args.get_uint ('n', "neighbors", 6);
-  double percent = args.get_double ('p', "percent", 1.0);
+  double percent = args.get_double ('p', "percent", 100);
   double distance = args.get_double ('d', "distance", 0.1);
 
   CGAL::Real_timer t;
@@ -40,7 +40,6 @@ int main (int argc, char** argv)
               << " * distance = " << distance << std::endl;
     t.start();
   }
-
 
   Point_set points;
 

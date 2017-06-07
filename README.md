@@ -74,6 +74,7 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 * `cgal_jet_smooth_point_set`
 * `cgal_mst_orient_normals`
 * `cgal_poisson_surface_reconstruction`
+* `cgal_random_simplify_point_set`
 * `cgal_remove_outliers`
 * `cgal_shape_detection`
 
@@ -83,13 +84,10 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 
 * `estimate_k_neighbor_scale()`
 * `estimate_range_scale()`
-* `random_simplify_point_set()`
 * `hierarchy_simplify_point_set()`
 * `wlop_simplify_and_regularize_point_set()`
 * `bilateral_point_set()`
-* `jet_estimate_normals()`
 * `pca_estimate_normals()`
-* `mst_orient_normals()`
 * `edge_aware_upsample_point_set()`
 * `vcm_estimate_normals()`
 * `structure_point_set()`
