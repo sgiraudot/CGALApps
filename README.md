@@ -76,6 +76,7 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 * `cgal_poisson_surface_reconstruction`
 * `cgal_random_simplify_point_set`
 * `cgal_remove_outliers`
+* `cgal_scale_space_surface_reconstruction`
 * `cgal_shape_detection`
 
 ## Todo
@@ -91,7 +92,3 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 * `edge_aware_upsample_point_set()`
 * `vcm_estimate_normals()`
 * `structure_point_set()`
-
-### Surface Reconstruction
-
-* `scale_space_surface_reconstruction()`

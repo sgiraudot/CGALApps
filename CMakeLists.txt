@@ -47,6 +47,7 @@ create_single_source_cgal_program( "src/cgal_mst_orient_normals.cpp" )
 create_single_source_cgal_program( "src/cgal_poisson_surface_reconstruction.cpp" )
 create_single_source_cgal_program( "src/cgal_random_simplify_point_set.cpp" )
 create_single_source_cgal_program( "src/cgal_remove_outliers.cpp" )
+create_single_source_cgal_program( "src/cgal_scale_space_surface_reconstruction.cpp" )
 create_single_source_cgal_program( "src/cgal_shape_detection.cpp" )
 
 
@@ -62,5 +63,6 @@ install(TARGETS
   cgal_poisson_surface_reconstruction
   cgal_random_simplify_point_set
   cgal_remove_outliers
+  cgal_scale_space_surface_reconstruction
   cgal_shape_detection
   RUNTIME DESTINATION bin)
