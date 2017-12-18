@@ -39,7 +39,7 @@ int main (int argc, char** argv)
     return EXIT_FAILURE;
   }
 
-  std::string output_filename = args.get_string('o', "output", "", 1);
+  std::string output_filename = args.get_string('o', "output", "");
   if(output_filename == "")
     output_filename = args.get_string('\0', "", "out.ply", 1);
 
@@ -51,7 +51,7 @@ int main (int argc, char** argv)
     {
       if (verbose)
         std::cerr << " * Convertion to binary PLY" << std::endl;
-      CGAL::set_binary_mode(std::cout);
+      CGAL::set_binary_mode(output);
     }
     else if (verbose)
       std::cerr << " * Convertion to ASCII PLY" << std::endl;
