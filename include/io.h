@@ -47,7 +47,11 @@ void write_point_set (const Args& args, Point_set& points, bool binary = true)
     if (binary)
       CGAL::set_binary_mode(std::cout);
     else
+    {
       CGAL::set_ascii_mode(std::cout);
+      std::cout.precision (std::numeric_limits<double>::digits10 + 2);
+    }
+          
     std::cout << points;
   }
   else
@@ -56,7 +60,10 @@ void write_point_set (const Args& args, Point_set& points, bool binary = true)
     if (binary)
       CGAL::set_binary_mode(f);
     else
+    {
       CGAL::set_ascii_mode(f);
+      f.precision (std::numeric_limits<double>::digits10 + 2);
+    }
     f << points;
   }
 }
@@ -66,6 +73,7 @@ void write_surface_to_stream (Point_set& points,
                               const FacetRange& facets,
                               std::ostream& stream)
 {
+  stream.precision (std::numeric_limits<double>::digits10 + 2);
   stream << "OFF\n" << points.size() << " " << facets.size() << " 0\n";
   for (typename Point_set::const_iterator it = points.begin(); it != points.end(); ++ it)
     stream << points.point(*it) << std::endl;
@@ -98,10 +106,14 @@ void write_surface (const Args& args, const Polyhedron& mesh)
 
   // Otherwise, write to std::cout
   if (filename == std::string())
+  {
+    std::cout.precision (std::numeric_limits<double>::digits10 + 2);
     std::cout << mesh;
+  }
   else
   {
     std::ofstream f(filename.c_str());
+    f.precision (std::numeric_limits<double>::digits10 + 2);
     f << mesh;
   }
 }
