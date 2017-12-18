@@ -5,7 +5,7 @@
 #include <CGAL/Shape_detection_3.h>
 #include <CGAL/Real_timer.h>
 
-typedef CGAL::Shape_detection_3::Efficient_RANSAC_traits
+typedef CGAL::Shape_detection_3::Shape_detection_traits
 <Kernel, Point_set, Point_set::Point_map, Point_set::Vector_map> Traits;
 typedef CGAL::Shape_detection_3::Efficient_RANSAC<Traits>        Efficient_ransac;
 typedef CGAL::Shape_detection_3::Plane<Traits>                   Plane_shape;
