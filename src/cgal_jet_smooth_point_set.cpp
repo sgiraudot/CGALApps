@@ -35,7 +35,7 @@ int main (int argc, char** argv)
   CGAL::Real_timer t;
   if (verbose)
   {
-    std::cerr << "[CGALApps] Grid Simplify Point Set" << std::endl
+    std::cerr << "[CGALApps] Jet Smooth Point Set" << std::endl
               << " * nb_neighbors = " << nb_neighbors << std::endl
               << " * fitting = " << fitting << std::endl
               << " * monge = " << monge << std::endl
