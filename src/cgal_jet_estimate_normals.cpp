@@ -2,7 +2,7 @@
 #include "types.h"
 #include "io.h"
 
-#include <CGAL/Point_set_3/Point_set_processing_3.h>
+#include <CGAL/jet_estimate_normals.h>
 #include <CGAL/Real_timer.h>
 
 int main (int argc, char** argv)
@@ -47,7 +47,11 @@ int main (int argc, char** argv)
     return EXIT_FAILURE;
   }
 
-  CGAL::jet_estimate_normals<Concurrency_tag> (points, nb_neighbors, fitting);
+  points.add_normal_map();
+  CGAL::jet_estimate_normals<Concurrency_tag> (points, nb_neighbors,
+                                               CGAL::parameters::point_map(points.point_map()).
+                                               normal_map(points.normal_map()).
+                                               degree_fitting(fitting));
 
   CGALApps::write_point_set (args, points);
   

@@ -2,7 +2,7 @@
 #include "types.h"
 #include "io.h"
 
-#include <CGAL/Point_set_3/Point_set_processing_3.h>
+#include <CGAL/remove_outliers.h>
 #include <CGAL/Real_timer.h>
 
 int main (int argc, char** argv)
@@ -53,7 +53,10 @@ int main (int argc, char** argv)
 
   points.remove_from
     (CGAL::remove_outliers
-     (points.begin(), points.end(), points.point_map(), nb_neighbors, percent, distance));
+     (points, nb_neighbors,
+      CGAL::parameters::point_map (points.point_map())
+      .threshold_percent(percent)
+      .threshold_distance(distance)));
 
   if (verbose)
     std::cerr << 100. * points.garbage_size() / (points.size() + points.garbage_size())

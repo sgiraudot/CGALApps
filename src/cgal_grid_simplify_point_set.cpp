@@ -2,7 +2,7 @@
 #include "types.h"
 #include "io.h"
 
-#include <CGAL/Point_set_3/Point_set_processing_3.h>
+#include <CGAL/grid_simplify_point_set.h>
 #include <CGAL/Real_timer.h>
 
 int main (int argc, char** argv)

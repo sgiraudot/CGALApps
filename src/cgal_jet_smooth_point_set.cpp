@@ -2,7 +2,7 @@
 #include "types.h"
 #include "io.h"
 
-#include <CGAL/Point_set_3/Point_set_processing_3.h>
+#include <CGAL/jet_smooth_point_set.h>
 #include <CGAL/Real_timer.h>
 
 int main (int argc, char** argv)
@@ -54,7 +54,11 @@ int main (int argc, char** argv)
   }
 
   for (std::size_t i = 0; i < repeat; ++ i)
-    CGAL::jet_smooth_point_set<Concurrency_tag> (points, nb_neighbors, fitting, monge);
+    CGAL::jet_smooth_point_set<Concurrency_tag>
+      (points, nb_neighbors,
+       CGAL::parameters::point_map (points.point_map())
+       .degree_fitting (fitting)
+       .degree_monge (monge));
 
   CGALApps::write_point_set (args, points);
   
