@@ -7,24 +7,24 @@
 
 int main (int argc, char** argv)
 {
-  CGALApps::Args args (argc, argv);
+  bool verbose;
+  std::string ifilename;
+  std::string ofilename;
+  double percent;
+  
+  CGALApps::Args args (verbose, ifilename);
+  args.add_option ("output,o", "Output file in PLY format", ofilename, "", "stdout");
+  args.add_option ("percent,p", "Removed percentage", percent, 50);
 
-  if (args.get_bool ('h', "help"))
+  if(!args.parse(argc, argv))
   {
     std::cout << "----------------------------------" << std::endl
               << "[CGALApps] Random Simplify Point Set" << std::endl
               << "----------------------------------" << std::endl << std::endl
               << "Simplifies a point set randomly."
-              << std::endl << std::endl
-              << " -v  --verbose  Display info to stderr" << std::endl
-              << " -i  --input    Input file" << std::endl
-              << " -o  --output   Output file in PLY format (default = standard output)" << std::endl
-              << " -p  --percent  Removed percentage (default = 50)" << std::endl;
+              << std::endl << args.help();
     return EXIT_SUCCESS;
   }
-
-  bool verbose = args.get_bool('v', "verbose");
-  double percent = args.get_double ('p', "percent", 50.);
 
   CGAL::Real_timer t;
   if (verbose)
@@ -36,7 +36,7 @@ int main (int argc, char** argv)
   
   Point_set points;
 
-  CGALApps::read_point_set (args, points);
+  CGALApps::read_point_set (ifilename, points);
     
   if (points.empty())
   {
@@ -44,14 +44,14 @@ int main (int argc, char** argv)
     return EXIT_FAILURE;
   }
   
-  CGAL::random_simplify_point_set (points, percent);
+  points.remove (CGAL::random_simplify_point_set (points, percent), points.end());
 
   if (verbose)
     std::cerr << 100. * points.garbage_size() / (points.size() + points.garbage_size())
               << "% / " << points.garbage_size() << " point(s) removed ("
               << points.size() << " point(s) remaining)." << std::endl;
 
-  CGALApps::write_point_set (args, points);
+  CGALApps::write_point_set (ofilename, points);
 
   if (verbose)
   {

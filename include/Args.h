@@ -1,6 +1,9 @@
 #ifndef CGALAPPS_ARGS_H_
 #define CGALAPPS_ARGS_H_
 
+#include <boost/program_options.hpp>
+
+#include <iostream>
 #include <map>
 #include <vector>
 
@@ -9,111 +12,69 @@ namespace CGALApps
 
 class Args
 {
-  typedef std::map<char, std::vector<std::string> > Short_map;
-  typedef std::map<std::string, std::vector<std::string> > Long_map;
-  Short_map m_short;
-  Long_map m_long;
+  typedef boost::program_options::options_description Desc;
+  Desc all;
+  std::vector<Desc> desc;
+
+  template <typename T>
+  std::string get_default_str (const T& value, const std::string& default_str)
+  {
+    if (default_str != std::string())
+      return default_str;
+    return std::to_string(value);
+  }
+
+  std::string get_default_str (const char* value, const std::string& default_str)
+  {
+    if (default_str != std::string())
+      return default_str;
+    return std::string(value);
+  }
   
 public:
 
-  Args (int argc, char** argv)
+  Args (bool& verbose, std::string& ifilename) : desc(1, Desc("Options"))
   {
-    if (argc == 1)
-      return;
-
-    typename Short_map::iterator default_short = m_short.end();
-    
-    typename Short_map::iterator last_short = m_short.end();
-    typename Long_map::iterator last_long = m_long.end();
-    for (int i = 1; i < argc; ++ i)
-    {
-      std::string a(argv[std::size_t(i)]);
-      if (a.size() == 2 && a[0] == '-')
-      {
-        last_short = m_short.insert (std::make_pair (a[1], std::vector<std::string>())).first;
-        last_long = m_long.end();
-      }
-      else if (a.size() > 2 && a[0] == '-' && a[1] == '-')
-      {
-        last_long = m_long.insert (std::make_pair (argv[std::size_t(i)]+2, std::vector<std::string>())).first;
-        last_short = m_short.end();
-      }
-      else
-      {
-        if (last_long != m_long.end())
-          last_long->second.push_back(a);
-        else if (last_short != m_short.end())
-          last_short->second.push_back(a);
-        else
-        {
-          if (default_short == m_short.end())
-            default_short = m_short.insert
-              (std::make_pair ('\0', std::vector<std::string>())).first;
-          default_short->second.push_back(a);
-        }
-      }
-    }
+    desc[0].add_options() ("help,h", "Display this help message");
+    this->add_option ("verbose,v", "Display info to stderr", verbose, false);
+    this->add_option ("input,i", "Input file", ifilename, "", "stdin");
+    std::cout.precision(2);
   }
 
-  std::string get_string (const char& s, const char* l, const std::string& def = std::string(), const std::size_t iter = 0) const
+  void add_section(const std::string& name)
   {
-    typename Short_map::const_iterator sit = m_short.find(s);
-    if (sit != m_short.end())
-      if (sit->second.size() > iter)
-        return sit->second[iter];
-    typename Long_map::const_iterator lit = m_long.find(std::string(l));
-    if (lit != m_long.end())
-      if (lit->second.size() > iter)
-        return lit->second[iter];
-    return def;
-  }
-
-  bool get_bool (const char& s, const char* l) const
-  {
-    typename Short_map::const_iterator sit = m_short.find(s);
-    if (sit != m_short.end())
-      return true;
-    typename Long_map::const_iterator lit = m_long.find(std::string(l));
-    if (lit != m_long.end())
-      return true;
-    return false;
+    all.add(desc.back());
+    desc.push_back(Desc(name));
   }
   
-  int get_int (const char& s, const char* l, const int& def = 0) const
+  template <typename RefType, typename DefType>
+  void add_option (const char* tags, const char* description, RefType& var, const DefType& default_value,
+                   const std::string& str_default_value = std::string())
   {
-    typename Short_map::const_iterator sit = m_short.find(s);
-    if (sit != m_short.end())
-      return std::atoi(sit->second.front().c_str());
-    typename Long_map::const_iterator lit = m_long.find(std::string(l));
-    if (lit != m_long.end())
-      return std::atoi(lit->second.front().c_str());
-    return def;
-  }
-  unsigned int get_uint (const char& s, const char* l, const unsigned int& def = 0) const
-  {
-    return static_cast<unsigned int>(get_int (s, l, static_cast<int>(def)));
-  }
-  std::size_t get_size_t (const char& s, const char* l, const std::size_t& def = 0) const
-  {
-    return static_cast<std::size_t>(get_int (s, l, static_cast<int>(def)));
+    desc.back().add_options()(tags,
+                              boost::program_options::value<RefType>(&var)->default_value
+                              (default_value, get_default_str(default_value, str_default_value)), description);
   }
 
-  double get_double (const char& s, const char* l, const double& def = 0.) const
+  void add_option (const char* tags, const char* description, bool& var, const bool& default_value)
   {
-    typename Short_map::const_iterator sit = m_short.find(s);
-    if (sit != m_short.end())
-      return std::atof(sit->second.front().c_str());
-    typename Long_map::const_iterator lit = m_long.find(std::string(l));
-    if (lit != m_long.end())
-      return std::atof(lit->second.front().c_str());
-    return def;
-  }
-  float get_float (const char& s, const char* l, const float& def = 0) const
-  {
-    return static_cast<float>(get_double (s, l, static_cast<double>(def)));
+    desc.back().add_options()(tags, boost::program_options::bool_switch(&var)->default_value(default_value), description);
   }
 
+  bool parse(int argc, char** argv)
+  {
+    all.add(desc.back());
+    boost::program_options::positional_options_description p;
+    p.add("input", -1);
+    boost::program_options::variables_map vm;
+    boost::program_options::store(boost::program_options::command_line_parser(argc, argv)
+                                  .options(all).positional(p).run(), vm);
+    boost::program_options::notify(vm);
 
+    return !vm.count("help");
+  }
+
+  const boost::program_options::options_description& help() const { return all; }
 };
 
 } // namespace CGALApps

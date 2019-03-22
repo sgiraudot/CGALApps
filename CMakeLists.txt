@@ -12,12 +12,16 @@ endif()
 
 include( ${CGAL_USE_FILE} )
 
-find_package( Boost REQUIRED )
+# Boost and its components
+find_package( Boost REQUIRED COMPONENTS filesystem program_options)
 
 if ( NOT Boost_FOUND )
   message(STATUS "This project requires the Boost library, and will not be compiled.")
   return()  
 endif()
+
+include_directories(${Boost_INCLUDE_DIRS})
+
 
 find_package( TBB )
 
@@ -27,7 +31,7 @@ if (EIGEN3_FOUND)
 endif()
 
 set(needed_cxx_features cxx_rvalue_references cxx_variadic_templates)
-set(linked_libraries)
+set(linked_libraries ${Boost_LIBRARIES})
 set(compile_definitions)
 
 find_package(LASLIB)
@@ -49,6 +53,7 @@ set(targets
   cgal_cluster_point_set
   cgal_compute_average_spacing
   cgal_convert
+  cgal_efficient_ransac
   cgal_grid_simplify_point_set
   cgal_jet_estimate_normals
   cgal_jet_smooth_point_set
@@ -56,8 +61,7 @@ set(targets
   cgal_poisson_surface_reconstruction
   cgal_random_simplify_point_set
   cgal_remove_outliers
-  cgal_scale_space_surface_reconstruction
-  cgal_shape_detection)
+  cgal_scale_space_surface_reconstruction)
 
 # Creating targets with correct libraries and flags
 foreach(target ${targets})

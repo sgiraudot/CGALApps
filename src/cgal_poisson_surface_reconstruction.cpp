@@ -12,30 +12,31 @@
 
 int main (int argc, char** argv)
 {
-  CGALApps::Args args (argc, argv);
+  bool verbose;
+  double epsilon;
+  std::string ifilename;
+  std::string ofilename;
+  double spacing;
+  double sm_angle;
+  double sm_radius;
+  double sm_distance;
 
-  if (args.get_bool ('h', "help"))
+  CGALApps::Args args (verbose, ifilename);
+  args.add_option ("output,o", "Output file in OFF format", ofilename, "", "stdout");
+  args.add_option ("spacing,s", "Size parameter", spacing, 0.1);
+  args.add_option ("angle,a", "Bound of minimum facet angle in degrees", sm_angle, 20.0);
+  args.add_option ("radius,r", "Bound of radius of Delaunay balls w.r.t. spacing", sm_radius, 30.0);
+  args.add_option ("distance,d", "Bound of center-center distances w.r.t. spacing", sm_distance, 0.375);
+
+  if(!args.parse(argc, argv))
   {
     std::cout << "-----------------------------------------" << std::endl
               << "[CGALApps] Poisson Surface Reconstruction" << std::endl
               << "-----------------------------------------" << std::endl << std::endl
               << "Reconstructs a surface based on an implicit function whose gradient fit the input normal vectors."
-              << std::endl << std::endl
-              << " -v  --verbose   Display info to stderr" << std::endl
-              << " -i  --input     Input file" << std::endl
-              << " -o  --output    Output file in OFF format (default = standard output)" << std::endl
-              << " -s  --spacing   Size parameter (default = 0.1)" << std::endl
-              << " -a  --angle     Bound of minimum facet angle in degrees (default = 20.0)" << std::endl
-              << " -r  --radius    Bound of radius of Delaunay balls w.r.t. to spacing (default = 30.0)" << std::endl
-              << " -d  --distance  Bound of center-center distances w.r.t. to spacing (default = 0.375)" << std::endl;
+              << std::endl << args.help();
     return EXIT_SUCCESS;
   }
-
-  bool verbose = args.get_bool('v', "verbose");
-  double spacing = args.get_double ('s', "spacing", 0.1);
-  double sm_angle = args.get_double ('a', "angle", 20.0);
-  double sm_radius = args.get_double ('r', "radius", 30.0);
-  double sm_distance = args.get_double ('d', "distance", 0.375);
 
   CGAL::Real_timer t;
   if (verbose)
@@ -50,7 +51,7 @@ int main (int argc, char** argv)
   
   Point_set points;
 
-  CGALApps::read_point_set (args, points);
+  CGALApps::read_point_set (ifilename, points);
     
   if (points.empty())
   {
@@ -78,7 +79,7 @@ int main (int argc, char** argv)
   if (verbose)
     std::cerr << mesh.size_of_facets() << " facet(s) created." << std::endl;
   
-  CGALApps::write_surface (args, mesh);
+  CGALApps::write_surface (ofilename, mesh);
   
   if (verbose)
   {

@@ -7,24 +7,25 @@
 
 int main (int argc, char** argv)
 {
-  CGALApps::Args args (argc, argv);
+  bool verbose;
+  double epsilon;
+  std::string ifilename;
+  std::string ofilename;
+  unsigned int nb_neighbors;
 
-  if (args.get_bool ('h', "help"))
+  CGALApps::Args args (verbose, ifilename);
+  args.add_option ("output,o", "Output file in PLY format", ofilename, "", "stdout");
+  args.add_option ("neighbors,n", "Number of nearest neighbors used", nb_neighbors, 24);
+  
+  if(!args.parse(argc, argv))
   {
     std::cout << "------------------------------" << std::endl
               << "[CGALApps] MST Orient Normals" << std::endl
               << "------------------------------" << std::endl << std::endl
               << "Orients the normal vectors of a point set based on a minimum spanning tree."
-              << std::endl << std::endl
-              << " -v  --verbose    Display info to stderr" << std::endl
-              << " -i  --input      Input file" << std::endl
-              << " -o  --output     Output file in PLY format (default = standard output)" << std::endl
-              << " -n  --neighbors  Number of nearest neighbors used (default = 24)" << std::endl;
+              << std::endl << args.help();
     return EXIT_SUCCESS;
   }
-
-  bool verbose = args.get_bool('v', "verbose");
-  unsigned int nb_neighbors = args.get_uint ('n', "neighbors", 24);
 
   CGAL::Real_timer t;
   if (verbose)
@@ -36,7 +37,7 @@ int main (int argc, char** argv)
 
   Point_set points;
 
-  CGALApps::read_point_set (args, points);
+  CGALApps::read_point_set (ifilename, points);
     
   if (points.empty())
   {
@@ -58,7 +59,7 @@ int main (int argc, char** argv)
       std::cerr << nb_unoriented << " point(s) were not properly oriented." << std::endl;
   }
 
-  CGALApps::write_point_set (args, points);
+  CGALApps::write_point_set (ofilename, points);
 
   if (verbose)
   {

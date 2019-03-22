@@ -9,36 +9,45 @@
 
 int main (int argc, char** argv)
 {
-  CGALApps::Args args (argc, argv);
-
-  if (args.get_bool ('h', "help"))
+  bool verbose;
+  std::string ifilename;
+  std::string ofilename;
+  double cluster;
+  std::size_t min_points;
+  std::string format;
+  
+  CGALApps::Args args (verbose, ifilename);
+  args.add_option ("output,o", "Output file in PLY format", ofilename, "", "stdout");
+  args.add_option ("cluster,c", "Maximum distances between connected points", cluster, 0.1);
+  args.add_option ("min-points,m", "Minimum number of point in shape", min_points, 0, "1% of all");
+  args.add_option ("mode,m", "Output mode: [filter/biggest/label]", format, "filter");
+  
+  if(!args.parse(argc, argv))
   {
     std::cout << "----------------------------------" << std::endl
               << "[CGALApps] Cluster Point Set" << std::endl
               << "----------------------------------" << std::endl << std::endl
               << "Clusters a point set given a tolerance and a minimum number of points."
-              << std::endl << std::endl
-              << " -v  --verbose     Display info to stderr" << std::endl
-              << " -i  --input       Input file" << std::endl
-              << " -o  --output      Output file in PLY format (default = standard output)" << std::endl
-              << " -c  --cluster     Maximum distances between connected points (default = 0.1)" << std::endl
-              << " -m  --min-points  Minimum number of points in shape (default = 1% of total)" << std::endl
-              << "Output:" << std::endl
-              << " -F  --filter      Keep all clusters with enough points (default = true)" << std::endl
-              << " -B  --biggest     Only keep biggest component (default = false)" << std::endl
-              << " -L  --label       Keep all points and save one label per cluster (default = false)" << std::endl;
+              << std::endl << args.help() << std::endl
+              << "Output modes:" << std::endl
+              << "  filter:  Keep all clusters with enough points (default mode)" << std::endl
+              << "  biggest: Only keep biggest component" << std::endl
+              << "  label:   Keep all points and save one label per cluster" << std::endl;
     return EXIT_SUCCESS;
   }
 
-  bool verbose = args.get_bool('v', "verbose");
-  double cluster = args.get_double ('c', "cluster", 0.1);
-  std::size_t min_points = args.get_size_t ('m', "min_points", (std::numeric_limits<std::size_t>::max)());
-
-  int method = 0;
-  if (args.get_bool('B', "biggest"))
+  int method = -1;
+  if (format == "filter")
+    method = 0;
+  else if (format == "biggest")
     method = 1;
-  else if (args.get_bool('L', "label"))
+  else if (format == "label")
     method = 2;
+  else
+  {
+    std::cerr << "Error: unknown mode \"" << format << "\"" << std::endl;
+    return EXIT_FAILURE;
+  }
 
   CGAL::Real_timer t;
   if (verbose)
@@ -48,7 +57,7 @@ int main (int argc, char** argv)
   }
   Point_set points;
 
-  CGALApps::read_point_set (args, points);
+  CGALApps::read_point_set (ifilename, points);
     
   if (points.empty())
   {
@@ -56,7 +65,7 @@ int main (int argc, char** argv)
     return EXIT_FAILURE;
   }
 
-  if (min_points == std::numeric_limits<std::size_t>::max())
+  if (min_points == 0)
     min_points = std::size_t(points.size() * 0.01);
   
   if (verbose)
@@ -80,7 +89,7 @@ int main (int argc, char** argv)
               << "% / " << points.garbage_size() << " point(s) removed ("
               << points.size() << " point(s) remaining)." << std::endl;
 
-  CGALApps::write_point_set (args, points);
+  CGALApps::write_point_set (ofilename, points);
 
   if (verbose)
   {

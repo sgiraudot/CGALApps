@@ -6,23 +6,15 @@
 #include <sstream>
 #include <CGAL/Point_set_3/IO.h>
 
-#include "Args.h"
 #include "types.h"
 
 namespace CGALApps
 {
 
-void read_point_set (const Args& args, Point_set& points, bool try_stdcin = true)
+void read_point_set (const std::string& filename, Point_set& points, bool try_stdcin = true)
 {
-  // Input file can be given with -i or --input
-  std::string filename = args.get_string ('i', "input");
-
-  // Input file can also be given as first parameter without - or --
-  if (filename == std::string())
-    filename = args.get_string ('\0', "");
-
   // Otherwise, read from std::cin
-  if (filename == std::string())
+  if (filename == "")
   {
     if (!try_stdcin)
       return;
@@ -36,13 +28,10 @@ void read_point_set (const Args& args, Point_set& points, bool try_stdcin = true
   }
 }
 
-void write_point_set (const Args& args, Point_set& points, bool binary = true)
+void write_point_set (const std::string& filename, const Point_set& points, bool binary = true)
 {
-  // Output file can be given with -o or --output
-  std::string filename = args.get_string ('o', "output");
-
   // Otherwise, write to std::cout
-  if (filename == std::string())
+  if (filename == "")
   {
     if (binary)
       CGAL::set_binary_mode(std::cout);
@@ -69,28 +58,25 @@ void write_point_set (const Args& args, Point_set& points, bool binary = true)
 }
 
 template <typename FacetRange>
-void write_surface_to_stream (Point_set& points,
+void write_surface_to_stream (const Point_set& points,
                               const FacetRange& facets,
                               std::ostream& stream)
 {
   stream.precision (std::numeric_limits<double>::digits10 + 2);
   stream << "OFF\n" << points.size() << " " << facets.size() << " 0\n";
-  for (typename Point_set::const_iterator it = points.begin(); it != points.end(); ++ it)
-    stream << points.point(*it) << std::endl;
-  for (typename FacetRange::const_iterator it = facets.begin(); it != facets.end(); ++ it)
-    stream << "3 " << (*it)[0] << " " << (*it)[1] << " " << (*it)[2] << std::endl;
+  for (const typename Point_set::Index& idx : points)
+    stream << points.point(idx) << std::endl;
+  for (const typename FacetRange::const_iterator::value_type& f : facets)
+    stream << "3 " << f[0] << " " << f[1] << " " << f[2] << std::endl;
 
 }
 
 template <typename FacetRange>
-void write_surface (const Args& args, Point_set& points,
+void write_surface (const std::string& filename, const Point_set& points,
                     const FacetRange& facets)
 {
-  // Output file can be given with -o or --output
-  std::string filename = args.get_string ('o', "output");
-
   // Otherwise, write to std::cout
-  if (filename == std::string())
+  if (filename == "")
     write_surface_to_stream (points, facets, std::cout);
   else
   {
@@ -99,13 +85,10 @@ void write_surface (const Args& args, Point_set& points,
   }
 }
 
-void write_surface (const Args& args, const Polyhedron& mesh)
+void write_surface (const std::string& filename, const Polyhedron& mesh)
 {
-  // Output file can be given with -o or --output
-  std::string filename = args.get_string ('o', "output");
-
   // Otherwise, write to std::cout
-  if (filename == std::string())
+  if (filename == "")
   {
     std::cout.precision (std::numeric_limits<double>::digits10 + 2);
     std::cout << mesh;

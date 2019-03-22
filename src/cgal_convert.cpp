@@ -6,31 +6,32 @@
 
 int main (int argc, char** argv)
 {
-  CGALApps::Args args (argc, argv);
+  bool verbose;
+  std::string ifilename;
+  std::string ofilename;
+  bool ascii;
+  
+  CGALApps::Args args (verbose, ifilename);
+  args.add_option ("output,o", "Output file", ofilename, "out.ply");
+  args.add_option ("ascii,a", "Force ASCII format for PLY", ascii, false);
 
-  if (args.get_bool ('h', "help"))
+  if(!args.parse(argc, argv))
   {
     std::cout << "----------------------------------" << std::endl
               << "[CGALApps] Convert" << std::endl
               << "----------------------------------" << std::endl << std::endl
               << "Converts a point set to another format (deduced from the user-given extension)."
-              << std::endl << std::endl
-              << " -v  --verbose  Display info to stderr" << std::endl
-              << " -i  --input    Input file" << std::endl
-              << " -o  --output   Output file (default = out.ply)" << std::endl
-              << " -a  --ascii    Force ASCII format for PLY" << std::endl;
+              << std::endl << args.help();
     return EXIT_SUCCESS;
   }
 
-  bool verbose = args.get_bool('v', "verbose");
-  
   CGAL::Real_timer t;
   if (verbose)
     std::cerr << "[CGALApps] Convert" << std::endl;
       
   Point_set points;
 
-  CGALApps::read_point_set (args, points);
+  CGALApps::read_point_set (ifilename, points);
 
   if (points.empty())
   {
@@ -38,15 +39,11 @@ int main (int argc, char** argv)
     return EXIT_FAILURE;
   }
 
-  std::string output_filename = args.get_string('o', "output", "");
-  if(output_filename == "")
-    output_filename = args.get_string('\0', "", "out.ply", 1);
-
-  std::ofstream output(output_filename);
+  std::ofstream output(ofilename);
   
-  if(CGALApps::extension_of_file_is(output_filename, "ply"))
+  if(CGALApps::extension_of_file_is(ofilename, "ply"))
   {
-    if (!(args.get_bool ('a', "--ascii")))
+    if (!ascii)
     {
       if (verbose)
         std::cerr << " * Convertion to binary PLY" << std::endl;
@@ -57,13 +54,13 @@ int main (int argc, char** argv)
     
     write_ply_point_set (output, points);
   }
-  else if(CGALApps::extension_of_file_is(output_filename, "off"))
+  else if(CGALApps::extension_of_file_is(ofilename, "off"))
   {
     if (verbose)
       std::cerr << " * Convertion to OFF" << std::endl;
     write_off_point_set (output, points);
   }
-  else if(CGALApps::extension_of_file_is(output_filename, "xyz"))
+  else if(CGALApps::extension_of_file_is(ofilename, "xyz"))
   {
     if (verbose)
       std::cerr << " * Convertion to XYZ" << std::endl;

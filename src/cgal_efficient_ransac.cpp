@@ -17,39 +17,39 @@ typedef CGAL::Shape_detection_3::Sphere<Traits>                  Sphere_shape;
 
 int main (int argc, char** argv)
 {
-  CGALApps::Args args (argc, argv);
+  bool verbose;
+  std::string ifilename;
+  std::string ofilename;
+  Efficient_ransac::Parameters parameters;
+  bool planes, cylinders, cones, torus, spheres;
+  
+  CGALApps::Args args (verbose, ifilename);
+  args.add_option ("output,o", "Output file in PLY format", ofilename, "", "stdout");
+  args.add_option ("probability,p", "Probability for search endurance", parameters.probability, 0.05);
+  args.add_option ("min-points,m", "Minimum number of points in shape", parameters.min_points,
+                   std::numeric_limits<std::size_t>::max(), "1% of total diagonal");
+  args.add_option ("epsilon,e", "Maximum tolerance from point to shape", parameters.epsilon,
+                   -1, "1% of bounding box diagonal");
+  args.add_option ("normal,n", "Maximum normal deviation in radiants", parameters.normal_threshold, 0.45);
+  args.add_option ("cluster,c", "Maximum distances between connected points", parameters.cluster_epsilon,
+                   -1, "1% of bounding box diagonal");
 
-  if (args.get_bool ('h', "help"))
+  args.add_section ("Shapes");
+  args.add_option ("planes,P", "Detect planes", planes, false);
+  args.add_option ("cylinders,C", "Detect cylinders", cylinders, false);
+  args.add_option ("cones,N", "Detect cones", cones, false);
+  args.add_option ("torus,T", "Detect torues", torus, false);
+  args.add_option ("spheres,S", "Detect spheres", spheres, false);
+
+  if(!args.parse(argc, argv))
   {
-    std::cout << "--------------------------" << std::endl
-              << "[CGALApps] Shape Detection" << std::endl
-              << "--------------------------" << std::endl << std::endl
+    std::cout << "---------------------------" << std::endl
+              << "[CGALApps] Efficient RANSAC" << std::endl
+              << "---------------------------" << std::endl << std::endl
               << "Efficient RANSAC algorithm to detect shapes in a point set."
-              << std::endl << std::endl
-              << " -v  --verbose      Display info to stderr" << std::endl
-              << " -i  --input        Input file" << std::endl
-              << " -o  --output       Output file in PLY format (default = standard output)" << std::endl
-              << " -p  --probability  Probability for search endurance (default = 0.05)" << std::endl
-              << " -m  --min-points   Minimum number of points in shape (default = 1% of total)" << std::endl
-              << " -e  --epsilon      Maximum tolerance from point to shape (default = 1% of bounding box diagonal)" << std::endl
-              << " -n  --normal       Maximum normal deviation in radiants (default = 0.45)" << std::endl
-              << " -c  --cluster      Maximum distances between connected points (default = 1% of bounding box diagonal)" << std::endl
-              << "Shapes:" << std::endl
-              << " -P  --planes       Detect planes" << std::endl
-              << " -C  --cylinders    Detect cylinders" << std::endl
-              << " -N  --cones        Detect cones" << std::endl
-              << " -T  --torus        Detect torus" << std::endl
-              << " -S  --spheres      Detect spheres" << std::endl;
+              << std::endl << args.help();
     return EXIT_SUCCESS;
   }
-
-  bool verbose = args.get_bool('v', "verbose");
-  Efficient_ransac::Parameters parameters;
-  parameters.probability = args.get_double('p', "probability", 0.05);
-  parameters.min_points = args.get_size_t('m', "min-points", (std::numeric_limits<std::size_t>::max)());
-  parameters.epsilon = args.get_double('e', "epsilon", -1);
-  parameters.cluster_epsilon = args.get_double('c', "cluster", -1);
-  parameters.normal_threshold = std::cos(args.get_double('n', "normal", 0.45));
 
   CGAL::Real_timer t;
   if (verbose)
@@ -61,15 +61,15 @@ int main (int argc, char** argv)
               << " * cluster = " << parameters.cluster_epsilon << std::endl
               << " * normal = " << parameters.normal_threshold << std::endl
               << " * shapes =";
-    if (args.get_bool ('P', "planes"))
+    if (planes)
       std::cerr << " planes";
-    if (args.get_bool ('C', "cylinders"))
+    if (cylinders)
       std::cerr << " cylinders";
-    if (args.get_bool ('N', "cones"))
+    if (cones)
       std::cerr << " cones";
-    if (args.get_bool ('T', "torus"))
+    if (torus)
       std::cerr << " torus";
-    if (args.get_bool ('S', "spheres"))
+    if (spheres)
       std::cerr << " spheres";
     std::cerr << std::endl;
     t.start();
@@ -78,7 +78,7 @@ int main (int argc, char** argv)
   
   Point_set points;
 
-  CGALApps::read_point_set (args, points);
+  CGALApps::read_point_set (ifilename, points);
     
   if (points.empty())
   {
@@ -98,27 +98,27 @@ int main (int argc, char** argv)
                    points.normal_map());
 
   bool at_least_one_shape = false;
-  if (args.get_bool ('P', "planes"))
+  if (planes)
   {
     ransac.add_shape_factory<Plane_shape>();
     at_least_one_shape = true;
   }
-  if (args.get_bool ('C', "cylinder"))
+  if (cylinders)
   {
     ransac.add_shape_factory<Cylinder_shape>();
     at_least_one_shape = true;
   }
-  if (args.get_bool ('N', "cone"))
+  if (cones)
   {
     ransac.add_shape_factory<Cone_shape>();
     at_least_one_shape = true;
   }
-  if (args.get_bool ('T', "torus"))
+  if (torus)
   {
     ransac.add_shape_factory<Torus_shape>();
     at_least_one_shape = true;
   }
-  if (args.get_bool ('S', "sphere"))
+  if (spheres)
   {
     ransac.add_shape_factory<Sphere_shape>();
     at_least_one_shape = true;
@@ -161,7 +161,7 @@ int main (int argc, char** argv)
     ++ idx;
   }
     
-  CGALApps::write_point_set (args, points);
+  CGALApps::write_point_set (ofilename, points);
 
   if (verbose)
   {

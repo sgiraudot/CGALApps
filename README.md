@@ -10,27 +10,34 @@ All applications embed their own documentation accessible with the
 argument `--help` (or `-h`). For example:
 
 ```sh
-$ cgal_shape_detection --help
---------------------------
-[CGALApps] Shape Detection
---------------------------
+$ cgal_efficient_ransac --help
+---------------------------
+[CGALApps] Efficient RANSAC
+---------------------------
 
 Efficient RANSAC algorithm to detect shapes in a point set.
 
- -v  --verbose      Display info to stderr
- -i  --input        Input file
- -o  --output       Output file in PLY format (default = standard output)
- -p  --probability  Probability for search endurance (default = 0.05)
- -m  --min-points   Minimum number of points in shape (default = 1% of total)
- -e  --epsilon      Maximum tolerance from point to shape (default = 1% of bounding box diagonal)
- -n  --normal       Maximum normal deviation in radiants (default = 0.45)
- -c  --cluster      Maximum distances between connected points (default = 1% of bounding box diagonal)
+Options:
+  -h [ --help ]                         Display this help message
+  -v [ --verbose ]                      Display info to stderr
+  -i [ --input ] arg (=stdin)           Input file
+  -o [ --output ] arg (=stdout)         Output file in PLY format
+  -p [ --probability ] arg (=0.050000)  Probability for search endurance
+  -m [ --min-points ] arg (=1% of total diagonal)
+                                        Minimum number of points in shape
+  -e [ --epsilon ] arg (=1% of bounding box diagonal)
+                                        Maximum tolerance from point to shape
+  -n [ --normal ] arg (=0.450000)       Maximum normal deviation in radiants
+  -c [ --cluster ] arg (=1% of bounding box diagonal)
+                                        Maximum distances between connected 
+                                        points
+
 Shapes:
- -P  --planes       Detect planes
- -C  --cylinders    Detect cylinders
- -N  --cones        Detect cones
- -T  --torus        Detect torus
- -S  --spheres      Detect spheres
+  -P [ --planes ]                       Detect planes
+  -C [ --cylinders ]                    Detect cylinders
+  -N [ --cones ]                        Detect cones
+  -T [ --torus ]                        Detect torues
+  -S [ --spheres ]                      Detect spheres
 ```
 For more information on the parameters, please refer to the
 corresponding CGAL reference manual pages.
@@ -69,6 +76,7 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 * `cgal_cluster_point_set`
 * `cgal_compute_average_spacing`
 * `cgal_convert`
+* `cgal_efficient_ransac`
 * `cgal_grid_simplify_point_set`
 * `cgal_jet_estimate_normals`
 * `cgal_jet_smooth_point_set`
@@ -77,7 +85,6 @@ $ cgal_grid_simplify_point_set data/example.xyz -e 0.5 | cgal_advancing_front_su
 * `cgal_random_simplify_point_set`
 * `cgal_remove_outliers`
 * `cgal_scale_space_surface_reconstruction`
-* `cgal_shape_detection`
 
 ## Todo
 

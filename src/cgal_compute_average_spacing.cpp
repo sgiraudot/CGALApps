@@ -7,25 +7,25 @@
 
 int main (int argc, char** argv)
 {
-  CGALApps::Args args (argc, argv);
-
-  if (args.get_bool ('h', "help"))
+  bool verbose;
+  unsigned int nb_neighbors;
+  std::string filename;
+  
+  CGALApps::Args args (verbose, filename);
+  args.add_option ("neighbors,n", "Number of nearest neighbors used", nb_neighbors, 6);
+  
+  if(!args.parse(argc, argv))
   {
     std::cout << "----------------------------------" << std::endl
               << "[CGALApps] Compute Average Spacing" << std::endl
               << "----------------------------------" << std::endl << std::endl
               << "Reads a point set and estimates the average spacing based on a set of nearest"
               << std::endl << "neighbors."
-              << std::endl << std::endl
-              << " -v  --verbose    Display info to stderr" << std::endl
-              << " -i  --input      Input file" << std::endl
-              << " -n  --neighbors  Number of nearest neighbors used (default = 6)" << std::endl;
+              << std::endl << args.help();
     return EXIT_SUCCESS;
   }
-
-  bool verbose = args.get_bool('v', "verbose");
-  unsigned int nb_neighbors = args.get_uint ('n', "neighbors", 6);
-
+  
+  
   CGAL::Real_timer t;
   if (verbose)
   {
@@ -36,7 +36,7 @@ int main (int argc, char** argv)
   
   Point_set points;
 
-  CGALApps::read_point_set (args, points);
+  CGALApps::read_point_set (filename, points);
     
   if (points.empty())
   {

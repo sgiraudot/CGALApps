@@ -7,29 +7,29 @@
 
 int main (int argc, char** argv)
 {
-  CGALApps::Args args (argc, argv);
+  bool verbose;
+  std::string ifilename;
+  std::string ofilename;
+  unsigned int nb_neighbors;
+  double percent;
+  double distance;
 
-  if (args.get_bool ('h', "help"))
+  CGALApps::Args args (verbose, ifilename);
+  args.add_option ("output,o", "Output file in PLY format", ofilename, "", "stdout");
+  args.add_option ("neighbors,n", "Number of nearest neighbors used", nb_neighbors, 6);
+  args.add_option ("percent,p", "Percentage threshold", percent, 100);
+  args.add_option ("distance,d", "Distance threshold", distance, 0.1);
+
+  if(!args.parse(argc, argv))
   {
     std::cout << "----------------------------------" << std::endl
               << "[CGALApps] Remove Outliers" << std::endl
               << "----------------------------------" << std::endl << std::endl
               << "Removes the outliers of a point set based on the local average squared distance."
-              << std::endl << std::endl
-              << " -v  --verbose    Display info to stderr" << std::endl
-              << " -i  --input      Input file" << std::endl
-              << " -o  --output     Output file in PLY format (default = standard output)" << std::endl
-              << " -n  --neighbors  Number of nearest neighbors used (default = 6)" << std::endl
-              << " -p  --percent    Percentage threshold (default = 100)" << std::endl
-              << " -d  --distance   Distance threshold (default = 0.1)" << std::endl;
+              << std::endl << args.help();
       
     return EXIT_SUCCESS;
   }
-
-  bool verbose = args.get_bool('v', "verbose");
-  unsigned int nb_neighbors = args.get_uint ('n', "neighbors", 6);
-  double percent = args.get_double ('p', "percent", 100);
-  double distance = args.get_double ('d', "distance", 0.1);
 
   CGAL::Real_timer t;
   if (verbose)
@@ -43,7 +43,7 @@ int main (int argc, char** argv)
 
   Point_set points;
 
-  CGALApps::read_point_set (args, points);
+  CGALApps::read_point_set (ifilename, points);
     
   if (points.empty())
   {
@@ -63,7 +63,7 @@ int main (int argc, char** argv)
               << "% / " << points.garbage_size() << " point(s) removed ("
               << points.size() << " point(s) remaining)." << std::endl;
 
-  CGALApps::write_point_set (args, points);
+  CGALApps::write_point_set (ofilename, points);
   
   if (verbose)
   {

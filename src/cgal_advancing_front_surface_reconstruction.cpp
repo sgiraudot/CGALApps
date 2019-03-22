@@ -38,28 +38,29 @@ struct Length {
 
 int main (int argc, char** argv)
 {
-  CGALApps::Args args (argc, argv);
+  bool verbose;
+  std::string ifilename;
+  std::string ofilename;
+  double radius;
+  double beta;
+  double length;
 
-  if (args.get_bool ('h', "help"))
+  CGALApps::Args args (verbose, ifilename);
+  args.add_option ("output,o", "Output file in OFF format", ofilename, "", "stdout");
+  args.add_option ("radius,r", "Radius ratio bound", radius, 5.0);
+  args.add_option ("beta,b", "Beta angle in radiants", beta, 0.52);
+  args.add_option ("length,l", "Maximum length of a facet", length, 0., "no limit");
+
+  if(!args.parse(argc, argv))
   {
     std::cout << "-------------------------------------------------" << std::endl
               << "[CGALApps] Advancing Front Surface Reconstruction" << std::endl
               << "-------------------------------------------------" << std::endl << std::endl
               << "Reconstructs an interpolating surface based on a 3D Delaunay triangulation."
-              << std::endl << std::endl
-              << " -v  --verbose  Display info to stderr" << std::endl
-              << " -i  --input    Input file" << std::endl
-              << " -o  --output   Output file in OFF format (default = standard output)" << std::endl
-              << " -r  --radius   Radius ratio bound (default = 5.0)" << std::endl
-              << " -b  --beta     Beta angle in radiants (default = 0.52)" << std::endl
-              << " -l  --length   Maximum length of a facet (default = no limit)" << std::endl;
+              << std::endl << args.help();
     return EXIT_SUCCESS;
   }
 
-  bool verbose = args.get_bool('v', "verbose");
-  double radius = args.get_double ('r', "radius", 5.0);
-  double beta = args.get_double ('b', "beta", 0.52);
-  double length = args.get_double ('l', "length", 0.0);
 
   CGAL::Real_timer t;
   if (verbose)
@@ -73,7 +74,7 @@ int main (int argc, char** argv)
   
   Point_set points;
 
-  CGALApps::read_point_set (args, points);
+  CGALApps::read_point_set (ifilename, points);
     
   if (points.empty())
   {
@@ -92,7 +93,7 @@ int main (int argc, char** argv)
   if (verbose)
     std::cerr << facets.size() << " facet(s) created." << std::endl;
   
-  CGALApps::write_surface (args, points, facets);
+  CGALApps::write_surface (ifilename, points, facets);
 
   if (verbose)
   {
